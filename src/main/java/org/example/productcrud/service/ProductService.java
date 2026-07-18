@@ -1,14 +1,25 @@
 package org.example.productcrud.service;
 
+import jakarta.validation.Valid;
+import org.example.productcrud.dto.ProductRequestDTO;
+import org.example.productcrud.dto.ProductResponseDTO;
 import org.example.productcrud.entity.Product;
+import org.example.productcrud.exception.ProductNotFoundException;
 import org.example.productcrud.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
+   private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
 
@@ -16,44 +27,61 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product product) {
-        Product newproduct = productRepository.save(product);
-        return newproduct;
+
+    private Product toEntity(ProductRequestDTO dto) {
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setQuantity(dto.getQuantity());
+
+        return product;
     }
 
-    public Product getById(Integer id) {
-        Optional<Product> found = productRepository.findById(id);
-        return found.orElse(null);
-
+    private ProductResponseDTO toResponseDTO(Product product) {
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+        productResponseDTO.setId(product.getId());
+        productResponseDTO.setName(product.getName());
+        productResponseDTO.setPrice(product.getPrice());
+        productResponseDTO.setQuantity(product.getQuantity());
+        return productResponseDTO;
     }
 
-    public List<Product> getAll() {
-        List<Product> productList = productRepository.findAll();
-        return productList;
-
+    public ProductResponseDTO createProduct(ProductRequestDTO dto) {
+        Product product = toEntity(dto);
+        Product savedProduct = productRepository.save(product);
+        logger.info("Product created with id:{}",savedProduct.getId());
+        return toResponseDTO(savedProduct);
     }
 
-    public boolean deleteById(Integer id) {
-        boolean idExits = productRepository.existsById(id);
-        if (idExits) {
-            productRepository.deleteById(id);
-            return true;
-        } else {
-            System.out.println("Given ID not available to delete");
-            return false;
-        }
+    public ProductResponseDTO getById(Integer id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return toResponseDTO(product);
     }
 
-    public Product updateProduct(Integer id, Product updatedProduct) {
-        boolean idExists = productRepository.existsById(id);
-        if (idExists) {
-            updatedProduct.setId(id);
-            productRepository.save(updatedProduct);
-        } else {
-            System.out.println("ID not available to update");
-        }
-        return updatedProduct;
+    public Page<ProductResponseDTO> getAll(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Product> productPage =productRepository.findAll(pageable);
+        return productPage.map(this::toResponseDTO);
     }
 
+    public ProductResponseDTO updateProduct(Integer id, ProductRequestDTO dto) {
+
+        productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("product not found"));
+        Product product = toEntity(dto);
+        product.setId(id);
+        Product updatedProduct = productRepository.save(product);
+        logger.info("Product updated with id: {}", id);
+        return toResponseDTO(updatedProduct);
+    }
+
+    public ProductResponseDTO deleteById(Integer id) {
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("product not found to delete"));
+        productRepository.delete(product);
+        logger.info("Product deleted with id: {}", id);
+        return toResponseDTO(product);
+
+    }
 
 }

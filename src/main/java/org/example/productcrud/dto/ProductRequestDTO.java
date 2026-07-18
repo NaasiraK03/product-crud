@@ -1,41 +1,30 @@
-package org.example.productcrud.entity;
+package org.example.productcrud.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-@Entity
-@Table(name="products")
-public class Product {
+public class ProductRequestDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @NotBlank(message="Name is required")
+   private String name;
 
-    private String name;
-
+    @NotNull(message="Price is required")
+    @Positive(message="Price must be positive")
     private Double price;
 
+    @NotNull(message = "Quantity required")
+    @PositiveOrZero(message="Quantity cannot be negative")
     private Integer quantity;
 
-    public Product() {
+    public ProductRequestDTO() {
     }
 
-    public Product(Integer id, String name, Double price, Integer quantity) {
-        this.id = id;
+    public ProductRequestDTO(String name, Double price, Integer quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -60,15 +49,5 @@ public class Product {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                '}';
     }
 }
