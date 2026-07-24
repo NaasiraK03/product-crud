@@ -16,7 +16,7 @@ public class LoggingAspect {
 
    @Before("execution(* org.example.productcrud.service.ProductService.*(..))")
    public void logBeforeMethod(JoinPoint joinPoint){
-     logger.info("Calling Method: {}",joinPoint.getSignature().getName());
+     logger.info("[ASPECT] Calling Method: {}",joinPoint.getSignature().getName());
    }
 
 
