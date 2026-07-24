@@ -2,14 +2,25 @@ package org.example.productcrud.security;
 
 import  io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
-
+import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.PostConstruct;
+import io.jsonwebtoken.security.Keys;
 import  javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
+    //private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
+    @Value("${jwt.secret}")
+    private String secretKeyString;
+
+    private SecretKey secretKey;
+
+    @PostConstruct
+    public void init() {
+        secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
+    }
 
     public String generateToken(String username, String role) {
         return Jwts.builder()

@@ -36,8 +36,8 @@ class ProductServiceTest {
         when(productRepository.findById(1)).thenReturn(Optional.of(product));
 
         ProductResponseDTO result = productService.getById(1);
-        assertEquals("Speaker", result.getName());
-        assertEquals(1, result.getId());
+        assertEquals("Speaker", result.name());
+        assertEquals(1, result.id());
 
     }
 
@@ -54,8 +54,8 @@ class ProductServiceTest {
         Product savedProduct = new Product(1, "Speaker", 3000.0, 2);
         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
         ProductResponseDTO result = productService.createProduct(dto);
-        assertEquals(1, result.getId());
-        assertEquals("Speaker", result.getName());
+        assertEquals(1, result.id());
+        assertEquals("Speaker", result.name());
     }
 
     @Test
