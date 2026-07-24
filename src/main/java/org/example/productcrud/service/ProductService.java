@@ -6,14 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.productcrud.dto.ProductRequestDTO;
 import org.example.productcrud.dto.ProductResponseDTO;
 import org.example.productcrud.entity.Product;
+import org.example.productcrud.entity.Category;
+import org.example.productcrud.exception.CategoryNotFoundException;
 import org.example.productcrud.exception.ProductNotFoundException;
+import org.example.productcrud.repository.CategoryRepository;
 import org.example.productcrud.repository.ProductRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +27,22 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final CategoryRepository categoryRepository;
+
     private Product toEntity(ProductRequestDTO dto) {
         Product product = new Product();
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         product.setQuantity(dto.getQuantity());
+        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(()->new CategoryNotFoundException("Category not found"));
+        product.setCategory(category);
 
         return product;
     }
 
     private ProductResponseDTO toResponseDTO(Product product) {
 
-        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getQuantity());
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getQuantity(),product.getCategory().getName());
     }
 
     @Transactional

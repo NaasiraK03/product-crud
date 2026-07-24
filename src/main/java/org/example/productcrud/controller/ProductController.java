@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.productcrud.dto.ProductRequestDTO;
 import org.example.productcrud.dto.ProductResponseDTO;
 import org.example.productcrud.entity.Product;
+import org.example.productcrud.repository.CategoryRepository;
 import org.example.productcrud.service.ProductService;
 import org.springframework.data.web.PagedModel;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+
 
     @PostMapping
     public ProductResponseDTO createProduct(@Valid @RequestBody ProductRequestDTO productDTO) {

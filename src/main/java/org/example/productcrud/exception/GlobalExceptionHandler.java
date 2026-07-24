@@ -49,5 +49,14 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String,String> handleCategoryNotFound(CategoryNotFoundException ex){
+        Map<String,String> error =new HashMap<>();
+        error.put("error",ex.getMessage());
+        return  error;
+    }
+
+
 
 }

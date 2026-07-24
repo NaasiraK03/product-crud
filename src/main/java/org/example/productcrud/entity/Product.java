@@ -2,6 +2,7 @@ package org.example.productcrud.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.context.annotation.Lazy;
 
 @Entity
 @Table(name = "products")
@@ -24,4 +25,10 @@ public class Product {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="category_id")
+    private Category category;
+
 }
