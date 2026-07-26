@@ -12,6 +12,8 @@ import org.example.productcrud.exception.ProductNotFoundException;
 import org.example.productcrud.repository.CategoryRepository;
 import org.example.productcrud.repository.ProductRepository;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +55,7 @@ public class ProductService {
         return toResponseDTO(savedProduct);
     }
 
+    @Cacheable(value = "products", key = "#id")
     public ProductResponseDTO getById(Integer id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return toResponseDTO(product);
@@ -73,6 +76,7 @@ public class ProductService {
         return new PagedModel<>(dtoPage);
     }
 
+    @CacheEvict(value = "products", key = "#id")
     @Transactional
     public ProductResponseDTO updateProduct(Integer id, ProductRequestDTO dto) {
 
@@ -85,6 +89,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = "products", key = "#id")
     public ProductResponseDTO deleteById(Integer id) {
 
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("product not found to delete"));
