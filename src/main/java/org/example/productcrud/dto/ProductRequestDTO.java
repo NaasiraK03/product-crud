@@ -27,6 +27,7 @@ public class ProductRequestDTO {
     @PositiveOrZero(message="Quantity cannot be negative")
     private Integer quantity;
 
+    @NotNull(message = "Category is required")
     private Integer categoryId;
 
 }

@@ -32,7 +32,7 @@ class ProductServiceTest {
 
     @Test
     void getById_shouldReturnProduct_whenProductExists() {
-        Product product = new Product(1, "Speaker", 3000.0, 2);
+        Product product = new Product(1, "Wireless Mouse", 799.99, 15,1);
         when(productRepository.findById(1)).thenReturn(Optional.of(product));
 
         ProductResponseDTO result = productService.getById(1);
@@ -47,15 +47,14 @@ class ProductServiceTest {
         when(productRepository.findById(999)).thenReturn(Optional.empty());
         assertThrows(ProductNotFoundException.class, () -> productService.getById(999));
     }
-
     @Test
+
     public void createProduct_shouldReturnSavedProduct() {
-        ProductRequestDTO dto = new ProductRequestDTO("Speaker", 3000.0, 2);
-        Product savedProduct = new Product(1, "Speaker", 3000.0, 2);
+        Product savedProduct = new Product(1, "Wireless Mouse", 799.99, 15,1);
         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
         ProductResponseDTO result = productService.createProduct(dto);
         assertEquals(1, result.id());
-        assertEquals("Speaker", result.name());
+        assertEquals("Wireless Mouse", result.name());
     }
 
     @Test
@@ -72,7 +71,7 @@ class ProductServiceTest {
     @Test
     public void deleteById_shouldDeleteProduct_whenProductExists() {
         // 1. Arrange: Configure the mock repo to find the product
-        Product someProduct = new Product(1, "Speaker", 3000.0, 2); // Ensure this object exists
+        Product someProduct = new Product(1, "Wireless Mouse", 799.99, 15,1); // Ensure this object exists,
         when(productRepository.findById(1)).thenReturn(Optional.of(someProduct));
 
         // 2. Act: Call the service method
