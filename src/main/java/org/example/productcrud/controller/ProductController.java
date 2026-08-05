@@ -8,6 +8,7 @@ import org.example.productcrud.entity.Product;
 import org.example.productcrud.repository.CategoryRepository;
 import org.example.productcrud.service.ProductService;
 import org.springframework.data.web.PagedModel;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
@@ -24,6 +25,11 @@ public class ProductController {
     @PostMapping
     public ProductResponseDTO createProduct(@Valid @RequestBody ProductRequestDTO productDTO) {
         return productService.createProduct(productDTO);
+    }
+
+    @GetMapping("/debug-auth")
+    public String debugAuth(Authentication authentication) {
+        return authentication.getAuthorities().toString();
     }
 
     @GetMapping
