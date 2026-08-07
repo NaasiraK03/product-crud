@@ -27,10 +27,10 @@ public class ProductController {
         return productService.createProduct(productDTO);
     }
 
-    @GetMapping("/debug-auth")
+    /*@GetMapping("/debug-auth")
     public String debugAuth(Authentication authentication) {
         return authentication.getAuthorities().toString();
-    }
+    }*/
 
     @GetMapping
     public PagedModel<ProductResponseDTO> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size) {
